@@ -13,7 +13,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
-import {Input, Button} from 'react-native-elements';
+import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import imgBr from '../../assets/images/bgr.jpg';
 import auth from '@react-native-firebase/auth';
@@ -132,17 +132,14 @@ const SignIn = ({navigation}) => {
             }}
           />
         </View>
-        <Button
-          title="Đăng nhập"
-          titleStyle={{color: '#333'}}
+        <TouchableOpacity
+          style={styles.button}
           disabled={loading?true:false}
-          icon={loading ? <ActivityIndicator /> : null}
-          containerStyle={{borderRadius: 20, marginHorizontal: 10}}
-          buttonStyle={{backgroundColor: '#5cfff2'}}
           onPress={() => {
             handleOnPressLogin();
-          }}
-        />
+          }}>
+          <Text style={styles.textButton}>Đăng nhập</Text>
+        </TouchableOpacity>
         <View style={styles.signup}>
           <Text style={{fontSize: 14}}>Bạn chưa có tài khoản?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
@@ -205,4 +202,15 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     paddingHorizontal: 10,
   },
+  button:{
+    backgroundColor: '#5cfff2',
+    padding:10,
+    borderRadius:20,
+  },
+  textButton: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  }
 });

@@ -23,7 +23,7 @@ import * as Animatable from 'react-native-animatable';
 import {useSelector} from 'react-redux';
 import Colors from './../../assets/themes/Colors';
 import {timeSince} from './../../utils/fomattime';
-const ItemPost = ({item}) => {
+const ItemPost = ({item,lastInputRef}) => {
   const navigation = useNavigation();
   const userNow = useSelector(state => state.user.data);
   const [userItemPost, setUserItemPost] = useState({});
@@ -84,7 +84,7 @@ const ItemPost = ({item}) => {
     }
   };
   const handleOpenComments = () => {
-    // lastInputRef.current.focus();
+    lastInputRef.current.focus();
   };
   const handleClickButtonDeletePost = () => {
     Alert.alert('Thông báo', 'Bạn muốn xóa bài viết', [
