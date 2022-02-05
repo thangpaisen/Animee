@@ -1,15 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableOpacity,
   ImageBackground,
   StatusBar,
   Pressable,
   ToastAndroid,
-  ActivityIndicator,
 } from 'react-native';
 import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -31,19 +29,21 @@ const SignUp = ({navigation}) => {
   const [errorMessageName, setErrorMessageName] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
+
   function handleOnPressLogin() {
     if (name.trim().length < 6) setErrorMessageName('Name is a required field');
     if (!validateEmail(email.trim()))
       setErrorMessageEmail('Email must be a valid email');
-    if (password.trim().length < 6)
+    if (password.trim()?.length < 6)
       setErrorMessagePassword('Password must be at least 6 characters');
     if (
       validateEmail(email.trim()) &&
-      password.trim().length >= 6 &&
-      name.trim().length >= 6
+      password.trim()?.length >= 6 &&
+      name.trim()?.length >= 6
     )
       registerUser(name.trim(), email.trim(), password.trim());
   }
+
   function registerUser(name, email, password) {
     setLoading(true);
     auth()
@@ -72,21 +72,23 @@ const SignUp = ({navigation}) => {
       });
   }
   function updateProfileUser(name) {
-    firestore().collection('users').doc(auth().currentUser.uid)
-    .set({
-          uid:auth().currentUser.uid,
-          displayName:name,
-          description:'',
-          imageAvatar: 'https://image.flaticon.com/icons/png/512/149/149071.png',
-          imageCover:'https://image.flaticon.com/icons/png/512/149/149071.png',
-          email: auth().currentUser.email,
-          follow:['oKn3cVIKArgZbXihWUh9ZO4xWX52'],
-          follower:[],
-          role:'User',
-          isBlocked:false,
-          report: [],
-          createdAt: new Date().getTime(),
-          })
+    firestore()
+      .collection('users')
+      .doc(auth().currentUser.uid)
+      .set({
+        uid: auth().currentUser.uid,
+        displayName: name,
+        description: '',
+        imageAvatar: 'https://image.flaticon.com/icons/png/512/149/149071.png',
+        imageCover: 'https://image.flaticon.com/icons/png/512/149/149071.png',
+        email: auth().currentUser.email,
+        follow: ['oKn3cVIKArgZbXihWUh9ZO4xWX52'],
+        follower: [],
+        role: 'User',
+        isBlocked: false,
+        report: [],
+        createdAt: new Date().getTime(),
+      });
   }
   return (
     <ImageBackground
@@ -163,10 +165,8 @@ const SignUp = ({navigation}) => {
         </View>
         <TouchableOpacity
           style={styles.button}
-          disabled={loading?true:false}
-          onPress={() => {
-            handleOnPressLogin();
-          }}>
+          disabled={loading ? true : false}
+          onPress={handleOnPressLogin}>
           <Text style={styles.textButton}>Đăng ký</Text>
         </TouchableOpacity>
         <View style={styles.signup}>
@@ -225,15 +225,15 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     paddingHorizontal: 10,
   },
-  button:{
+  button: {
     backgroundColor: '#5cfff2',
-    padding:10,
-    borderRadius:20,
+    padding: 10,
+    borderRadius: 20,
   },
   textButton: {
     color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-  }
+  },
 });

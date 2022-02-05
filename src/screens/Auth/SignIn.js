@@ -10,7 +10,7 @@ import {
   StatusBar,
   Pressable,
   ToastAndroid,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import {Input} from 'react-native-elements';
@@ -27,19 +27,20 @@ const validateEmail = email => {
 
 const SignIn = ({navigation}) => {
   const user = useSelector(state => state.user.data);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessageEmail, setErrorMessageEmail] = useState('');
   const [errorMessagePassword, setErrorMessagePassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
+
   function handleOnPressLogin() {
     if (!validateEmail(email.trim()))
       setErrorMessageEmail('Email must be a valid email');
-    if (password.trim().length < 6)
+    if (password.trim()?.length < 6)
       setErrorMessagePassword('Password must be at least 6 characters');
-    if (validateEmail(email.trim()) && password.trim().length >= 6)
+    if (validateEmail(email.trim()) && password.trim()?.length >= 6)
       loginUser(email.trim(), password.trim());
   }
   function loginUser(email, password) {
@@ -134,10 +135,8 @@ const SignIn = ({navigation}) => {
         </View>
         <TouchableOpacity
           style={styles.button}
-          disabled={loading?true:false}
-          onPress={() => {
-            handleOnPressLogin();
-          }}>
+          disabled={loading ? true : false}
+          onPress={handleOnPressLogin}>
           <Text style={styles.textButton}>Đăng nhập</Text>
         </TouchableOpacity>
         <View style={styles.signup}>
@@ -202,15 +201,15 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     paddingHorizontal: 10,
   },
-  button:{
+  button: {
     backgroundColor: '#5cfff2',
-    padding:10,
-    borderRadius:20,
+    padding: 10,
+    borderRadius: 20,
   },
   textButton: {
     color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-  }
+  },
 });
