@@ -18,6 +18,7 @@ import {useSelector} from 'react-redux';
 import ItemUserOnline from './ItemUserOnline';
 import Nodata from "./../../components/Nodata";
 import Loading from "./../../components/Loading";
+import Header from "./Header";
 const Chat = () => {
   const [listUsers, setListUsers] = useState([]);
   const [messagesThreads, setMessagesThreads] = useState([]);
@@ -67,14 +68,7 @@ const Chat = () => {
   }, []);
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.textHeader}>Tin nhắn</Text>
-        <TouchableOpacity
-            onPress={() => navigation.navigate('Search',{type: 'userMessage'})}
-          >
-          <Icon name="search" size={30} color={'black'} />
-        </TouchableOpacity>
-      </View>
+      <Header />
       <View style={styles.listFriendOnLine}>
         <FlatList
           horizontal
