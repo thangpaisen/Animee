@@ -82,7 +82,7 @@ const SignUp = ({navigation}) => {
         imageAvatar: 'https://image.flaticon.com/icons/png/512/149/149071.png',
         imageCover: 'https://image.flaticon.com/icons/png/512/149/149071.png',
         email: auth().currentUser.email,
-        follow: ['oKn3cVIKArgZbXihWUh9ZO4xWX52'],
+        follow: ['GyQYbaKSpPXxnCGDnyErKiYE2FC3'],
         follower: [],
         role: 'User',
         isBlocked: false,

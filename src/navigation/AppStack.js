@@ -34,6 +34,8 @@ import DrawerContent from "./../screens/DrawerContent/DrawerContent";
 import UsersManagement from "./../screens/Admin/UsersManagement/UsersManagement";
 import Reports from "./../screens/Admin/Reports/Reports";
 import PostDetail from "./../screens/Post/PostDetail";
+import ListUserFollow from "./../screens/ProfileUser/ListUserFollow/ListUserFollow";
+import ListUserFollower from "./../screens/ProfileUser/ListUserFollow/ListUserFollower";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -286,6 +288,20 @@ const AppStack = () => {
       <Stack.Screen
         name="StackGroups"
         component={StackGroups}
+        options={{
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="ListUserFollow"
+        component={ListUserFollow}
+        options={{
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="ListUserFollower"
+        component={ListUserFollower}
         options={{
           ...TransitionPresets.SlideFromRightIOS,
         }}
