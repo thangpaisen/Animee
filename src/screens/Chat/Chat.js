@@ -16,9 +16,21 @@ import ItemRoomChat from './ItemRoomChat';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import ItemUserOnline from './ItemUserOnline';
-import Nodata from "./../../components/Nodata";
-import Loading from "./../../components/Loading";
-import Header from "./Header";
+import Nodata from './../../components/Nodata';
+import Loading from './../../components/Loading';
+import admob, {
+  MaxAdContentRating,
+  InterstitialAd,
+  AdEventType,
+  RewardedAd,
+  RewardedAdEventType,
+  BannerAd,
+  TestIds,
+  BannerAdSize,
+  AdMobRewarded,
+} from '@react-native-firebase/admob';
+import Header from './Header';
+import {showInterstitialAd} from '../../firebase/Admob';
 const Chat = () => {
   const [listUsers, setListUsers] = useState([]);
   const [messagesThreads, setMessagesThreads] = useState([]);
@@ -53,11 +65,11 @@ const Chat = () => {
       .onSnapshot(querySnapshot => {
         var messagesThreads = [];
         querySnapshot.forEach(doc => {
-          if(!doc?.data().hide)
-          messagesThreads.unshift({
-            id: doc.id,
-            ...doc?.data(),
-          });
+          if (!doc?.data().hide)
+            messagesThreads.unshift({
+              id: doc.id,
+              ...doc?.data(),
+            });
         });
         setMessagesThreads(messagesThreads);
         setLoading(false);
@@ -83,15 +95,35 @@ const Chat = () => {
           backgroundColor: '#ededed',
           marginVertical: 10,
         }}></View>
-      {loading?<Loading/>:(messagesThreads.length>0?
-      <View style={styles.listMessage}>
-        <FlatList
-          data={messagesThreads}
-          renderItem={({item, index}) => <ItemRoomChat item={item} />}
-          keyExtractor={item => item.id}
+      {loading ? (
+        <Loading />
+      ) : messagesThreads.length > 0 ? (
+        <View style={styles.listMessage}>
+          <FlatList
+            data={messagesThreads}
+            renderItem={({item, index}) => <ItemRoomChat item={item} />}
+            keyExtractor={item => item.id}
+          />
+        </View>
+      ) : (
+        <Nodata title="Không có tin nhắn nào, bạn có thể tìm kiếm người để bắt đầu cuộc trò chuyện của mình" />
+      )}
+      <View style={{alignSelf: 'center', marginBottom: 5}}>
+        <BannerAd
+          size={BannerAdSize.BANNER}
+          // size={BannerAdSize.SMART_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+          unitId={'ca-app-pub-5057240456793980/6870738526'}
+          onAdLoaded={() => {
+            console.log('Advert loaded3');
+          }}
+          onAdFailedToLoad={error => {
+            console.log('Advert failed to load: ', error);
+          }}
         />
       </View>
-      :<Nodata title = "Không có tin nhắn nào, bạn có thể tìm kiếm người để bắt đầu cuộc trò chuyện của mình" />)}
     </View>
   );
 };
@@ -118,8 +150,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: 'row',
   },
-
-  listMessage: {},
+  listMessage: {
+    flex: 1,
+  },
   itemMessage: {
     flexDirection: 'row',
     padding: 10,

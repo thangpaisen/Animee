@@ -10,6 +10,7 @@ import {
   AppState,
   Alert,
 } from 'react-native';
+import admob, { MaxAdContentRating } from '@react-native-firebase/admob';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
@@ -18,23 +19,33 @@ import {Avatar} from 'react-native-elements';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {useSelector, useDispatch} from 'react-redux';
-import {getUser,setUser} from '../../redux/actions/user';
+import {getUser, setUser} from '../../redux/actions/user';
+import {showInterstitialAd} from '../../firebase/Admob';
 const DrawerContent = () => {
   const navigation = useNavigation();
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const user = useSelector(state => state.user.data);
   useEffect(() => {
     const unsubscribe = dispatch(getUser());
     return () => {
-        unsubscribe();
-    }
+      unsubscribe();
+    };
+  }, []);
+  useEffect(() => {
+    admob()
+      .setRequestConfiguration({
+        maxAdContentRating: MaxAdContentRating.PG,
+        tagForChildDirectedTreatment: true,
+        tagForUnderAgeOfConsent: true,
+      })
+      .then(() => {
+      });
   }, []);
   const handleOnLogout = async () => {
     auth()
-    .signOut()
-    .then(() => {
-    })
-    .catch(error => {});
+      .signOut()
+      .then(() => {})
+      .catch(error => {});
   };
   return (
     <View style={styles.container}>
@@ -115,37 +126,44 @@ const dispatch = useDispatch();
               }}
             />
             {/* Quản lý*/}
-            {user?.role == 'Admin' &&
-            <>
-            <DrawerItem
-              style={{borderTopColor: '#f4f4f4', borderTopWidth: 1}}
-              icon={({color, size}) => (
-                <Icon name="person-outline" color={color} size={size} />
-              )}
-              label={({focused, color}) => (
-                <Text style={{color: '#555', fontSize: 16, fontWeight: 'bold'}}>
-                  Quản lý người dùng
-                </Text>
-              )}
-              onPress={() => {
-                navigation.navigate('UsersManagement');
-              }}
-            />
-            <DrawerItem
-              style={{borderTopColor: '#f4f4f4', borderTopWidth: 1}}
-              icon={({color, size}) => (
-                <Icon name="information-circle-outline" color={color} size={size} />
-              )}
-              label={({focused, color}) => (
-                <Text style={{color: '#555', fontSize: 16, fontWeight: 'bold'}}>
-                  Bị báo cáo
-                </Text>
-              )}
-              onPress={() => {
-                navigation.navigate('Reports');
-              }}
-            />
-            </>}
+            {user?.role == 'Admin' && (
+              <>
+                <DrawerItem
+                  style={{borderTopColor: '#f4f4f4', borderTopWidth: 1}}
+                  icon={({color, size}) => (
+                    <Icon name="person-outline" color={color} size={size} />
+                  )}
+                  label={({focused, color}) => (
+                    <Text
+                      style={{color: '#555', fontSize: 16, fontWeight: 'bold'}}>
+                      Quản lý người dùng
+                    </Text>
+                  )}
+                  onPress={() => {
+                    navigation.navigate('UsersManagement');
+                  }}
+                />
+                <DrawerItem
+                  style={{borderTopColor: '#f4f4f4', borderTopWidth: 1}}
+                  icon={({color, size}) => (
+                    <Icon
+                      name="information-circle-outline"
+                      color={color}
+                      size={size}
+                    />
+                  )}
+                  label={({focused, color}) => (
+                    <Text
+                      style={{color: '#555', fontSize: 16, fontWeight: 'bold'}}>
+                      Bị báo cáo
+                    </Text>
+                  )}
+                  onPress={() => {
+                    navigation.navigate('Reports');
+                  }}
+                />
+              </>
+            )}
           </View>
         </View>
       </DrawerContentScrollView>

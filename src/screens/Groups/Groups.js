@@ -19,9 +19,13 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import Loading from "./../../components/Loading";
 import Nodata from "./../../components/Nodata";
-
+import {showInterstitialAd} from '../../firebase/Admob';
+import {setCountZero,setCountIncremented} from '../../redux/actions/countLoadAdmob';
+import {useDispatch, useSelector} from 'react-redux';
 const Groups = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const countLoadAdmob = useSelector(state => state.countLoadAdmob);
   const [myGroups, setMyGroups] = React.useState([]);
   const [postsGroups, setPostsGroups] = React.useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,6 +61,16 @@ const Groups = () => {
       setRefreshing(false);
     return () => unsubscribe();
   }, [refreshing]);
+  useEffect(() => {
+        const unsubscribe = navigation.addListener('tabPress', () => {
+            if(countLoadAdmob>=20){
+                showInterstitialAd();
+                dispatch(setCountZero());
+            }
+            else dispatch(setCountIncremented());
+        });
+        return unsubscribe;
+    }, [countLoadAdmob]);
   return (
     <View style={styles.container}>
       <Header />

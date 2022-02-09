@@ -53,24 +53,24 @@ const ItemPost = ({item}) => {
     return () => sub();
   }, []);
   const handleOnLove = () => {
-    if (item.love.indexOf(userNow.uid) > -1) {
+    if (item.love.indexOf(userNow?.uid) > -1) {
       ref.set(
         {
-          love: firestore.FieldValue.arrayRemove(userNow.uid),
+          love: firestore.FieldValue.arrayRemove(userNow?.uid),
         },
         {merge: true},
       );
     } else {
       ref.set(
         {
-          love: firestore.FieldValue.arrayUnion(userNow.uid),
+          love: firestore.FieldValue.arrayUnion(userNow?.uid),
         },
         {merge: true},
       );
       if(auth().currentUser.uid!==item.uidUser)
         firestore().collection('users').doc(item.uidUser).collection('notifications').doc(`Love${item.id}`).set({
             createdAt: new Date().getTime(),
-            listUsers: firestore.FieldValue.arrayUnion(userNow.uid),
+            listUsers: firestore.FieldValue.arrayUnion(userNow?.uid),
             type: 'Love',
             idPost: item.id,
             watched: false,
@@ -191,10 +191,10 @@ const ItemPost = ({item}) => {
             onPress={() => handleOnLove()}>
             <Icon
               name={
-                item.love.indexOf(userNow.uid) > -1 ? 'heart' : 'heart-outline'
+                item.love.indexOf(userNow?.uid) > -1 ? 'heart' : 'heart-outline'
               }
               size={22}
-              color={item.love.indexOf(userNow.uid) > -1 ? 'red' : '#666'}
+              color={item.love.indexOf(userNow?.uid) > -1 ? 'red' : '#666'}
             />
             {item.love.length > 0 && (
               <Text style={styles.textItemReact}>{item.love.length}</Text>

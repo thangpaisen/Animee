@@ -135,8 +135,8 @@ android {
         applicationId "com.animee"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         vectorDrawables.useSupportLibrary = true
     }
     splits {
@@ -204,6 +204,7 @@ dependencies {
     implementation project(':react-native-vector-icons')
     
     implementation 'com.facebook.fresco:animated-gif:2.0.0'  // For animated GIF support
+    
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

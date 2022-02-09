@@ -111,6 +111,27 @@ const ItemPostGroups = ({item}) => {
         })
     });
   };
+  const handleClickButtonReport = () => {
+      Alert.alert('Thông báo', 'Bạn muốn báo cáo bài viết', [
+      {
+        text: 'Cancel',
+        onPress: () => setModalVisible(false),
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => reportPost()},
+    ]);
+  }
+  const reportPost = () => {
+        ref.set(
+        {
+            report: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
+        },
+        {merge: true},
+        ).then(() => {
+        setModalVisible(false);
+        ToastAndroid.show('Bạn đã báo cáo bài viết thành công', ToastAndroid.SHORT);
+        });
+  }
   if (!dataPost) return null;
   return (
     <>
@@ -163,13 +184,11 @@ const ItemPostGroups = ({item}) => {
               </Text>
             </View>
           </View>
-          {userNow.uid === item?.uidUser && (
             <Pressable
               style={styles.morePost}
               onPress={() => setModalVisible(true)}>
               <Icon name="ellipsis-horizontal" size={24} color="black" />
             </Pressable>
-          )}
         </View>
         <View style={styles.content}>
           {dataPost?.message?.text.length > 0 && (
@@ -238,6 +257,8 @@ const ItemPostGroups = ({item}) => {
           onPress={() => setModalVisible(false)}
           style={{flex: 1, backgroundColor: 'black', opacity: 0.2}}></Pressable>
         <View style={styles.morePostContent}>
+        {item?.uidUser === auth().currentUser.uid ?
+        <>
           <TouchableOpacity
             style={styles.morePostItem}
             onPress={() => handleClickButtonUpDatePost()}>
@@ -252,6 +273,13 @@ const ItemPostGroups = ({item}) => {
             <Icon name="trash-outline" size={24} color="black" />
             <Text style={{fontSize: 16, marginLeft: 10}}>Xóa</Text>
           </TouchableOpacity>
+          </>:
+          <TouchableOpacity
+            style={styles.morePostItem}
+            onPress={() => handleClickButtonReport()}>
+            <Icon name="information-circle-outline" size={24} color="black" />
+            <Text style={{fontSize: 16, marginLeft: 10}}>Báo cáo bài viết</Text>
+          </TouchableOpacity>}
         </View>
       </Modal>
     </>

@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import { StyleSheet, Text, View,Modal,ToastAndroid,Pressable,TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View,Modal,ToastAndroid,Pressable,TouchableOpacity,ScrollView} from 'react-native'
 import Header from "./Header"
 import ItemYourInvites from "./ItemYourInvites";
 import firestore from '@react-native-firebase/firestore';
@@ -39,7 +39,7 @@ const Notification = () => {
             <Header/>
             {loading?<Loading/>:
             (data.length > 0 ?
-            <View style={styles.content}>
+            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 {data.map(item => 
                     {
                         if(item.type === 'inviteGroup'){
@@ -55,7 +55,7 @@ const Notification = () => {
                             return <ItemUserCommentPost key={item.id} item={item} handleClickButtonDelete={handleClickButtonDelete}/>
                         }
                     })}
-            </View>
+            </ScrollView>
             :<Nodata title={'Không có thông báo nào'}/>)}
         </View>
     )

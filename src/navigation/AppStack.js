@@ -91,6 +91,7 @@ const MyTabs=()=> {
       <Tab.Screen
         name="Notification"
         component={Notification}
+        
         options={{
           tabBarLabel: 'Thông báo',
           tabBarIcon: ({color,focused}) => (
