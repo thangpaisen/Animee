@@ -1,22 +1,34 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, ToastAndroid, Alert,Linking} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ToastAndroid,
+  Alert,
+  Linking,
+} from 'react-native';
 import Colors from './../../../../assets/themes/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 const SettingsGroup = ({route}) => {
-    const {group} = route?.params;
+  const {group} = route?.params;
   const navigation = useNavigation();
   const handleClickButtonLeaveGroup = () => {
-    Alert.alert('Thông báo', 'Bạn là quản trị viên của nhóm sau khi bạn rời đi nhóm sẽ không còn quản trị viên, Bạn chắc chắn muốn rời khỏi nhóm', [
-      {
-        text: 'Cancel',
-        // onPress: () => setModalVisible(false),
-        style: 'cancel',
-      },
-      {text: 'OK', onPress: () => handleOnLeaveGroup()},
-    ]);
+    Alert.alert(
+      'Thông báo',
+      'Bạn là quản trị viên của nhóm sau khi bạn rời đi nhóm sẽ không còn quản trị viên, Bạn chắc chắn muốn rời khỏi nhóm',
+      [
+        {
+          text: 'Cancel',
+          // onPress: () => setModalVisible(false),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => handleOnLeaveGroup()},
+      ],
+    );
   };
   const handleOnLeaveGroup = () => {
     firestore()
@@ -34,7 +46,7 @@ const SettingsGroup = ({route}) => {
           .doc(auth().currentUser.uid)
           .delete()
           .then(() => {
-              navigation.navigate('Groups');
+            navigation.navigate('Groups');
             ToastAndroid.show('Bạn đã rời khỏi nhóm', ToastAndroid.SHORT);
           });
       })
@@ -51,31 +63,61 @@ const SettingsGroup = ({route}) => {
         <Text style={styles.textHeader}>Cài đặt nhóm</Text>
       </View>
       <View style={styles.body}>
-        {group?.isBlocked?
-        <View style={{flex:1,alignItems: 'center',justifyContent:'center'}}>
-            <Text style={{fontSize: 30, fontWeight: 'bold',alignItems: 'center',color:'red'}}>Nhóm bị khóa</Text>
+        {group?.isBlocked ? (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: 'bold',
+                alignItems: 'center',
+                color: 'red',
+              }}>
+              Nhóm bị khóa
+            </Text>
             <TouchableOpacity
-                style={styles.btnMailSupport}
-                onPress={() => Linking.openURL('mailto:thangpaisen@gmail.com')}>
-                <Icon name="mail-outline" size={24} color={'black'} />
-                <Text style={{marginLeft:10}}>Liện Hệ Admin</Text>
+              style={styles.btnMailSupport}
+              onPress={() => Linking.openURL('mailto:thangpaisen@gmail.com')}>
+              <Icon name="mail-outline" size={24} color={'black'} />
+              <Text style={{marginLeft: 10}}>Liện Hệ Admin</Text>
             </TouchableOpacity>
-        </View>:
-        <View style={styles.itemBody}>
+          </View>
+        ) : (
+          <View style={styles.itemBody}>
+            <Text style={styles.textItemBody}>Cần xem xét</Text>
+            <View style={styles.settingsContent}>
+              <TouchableOpacity
+                style={styles.itemSettings}
+                onPress={() =>
+                  navigation.navigate('ReportPostsGroup',{uidGroup: group.id})
+                }>
+                <Icon name="people-outline" size={20} color={'black'} />
+                <Text style={styles.textItemSettings}>Bài viết bị báo cáo</Text>
+              </TouchableOpacity>
+            </View>
             <Text style={styles.textItemBody}>Cài đặt</Text>
             <View style={styles.settingsContent}>
-                <TouchableOpacity style={styles.itemSettings}
-                onPress={() =>navigation.navigate('UpdateDescGroup',{group:group})}>
-                    <Icon name="ios-settings" size={20} color={'black'} />
-                    <Text style={styles.textItemSettings}>Chỉnh sửa thông tin nhóm</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.itemSettings}
-                onPress={() =>navigation.navigate('MembersGroup',{dataGroup:group})}>
-                    <Icon name="people-outline" size={20} color={'black'} />
-                    <Text style={styles.textItemSettings}>Quản lý thành viên</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.itemSettings}
+                onPress={() =>
+                  navigation.navigate('UpdateDescGroup', {group: group})
+                }>
+                <Icon name="ios-settings" size={20} color={'black'} />
+                <Text style={styles.textItemSettings}>
+                  Chỉnh sửa thông tin nhóm
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.itemSettings}
+                onPress={() =>
+                  navigation.navigate('MembersGroup', {dataGroup: group})
+                }>
+                <Icon name="people-outline" size={20} color={'black'} />
+                <Text style={styles.textItemSettings}>Quản lý thành viên</Text>
+              </TouchableOpacity>
             </View>
-        </View>}
+          </View>
+        )}
         <View style={styles.itemBody}>
           <Text style={styles.textItemBody}>Hỗ trợ</Text>
           <View style={styles.supportContent}>
@@ -85,8 +127,9 @@ const SettingsGroup = ({route}) => {
               </View>
               <Text style={styles.textSupportItem}>Chia sẻ nhóm</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.supportItem}
-            onPress={() =>handleClickButtonLeaveGroup()}>
+            <TouchableOpacity
+              style={styles.supportItem}
+              onPress={() => handleClickButtonLeaveGroup()}>
               <View style={styles.supportItemIcon}>
                 <Icon name="log-out-outline" size={28} color={'black'} />
               </View>
@@ -126,29 +169,30 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     padding: 20,
+    paddingTop: 0,
   },
-  itemBody:{
-      borderBottomWidth: 0.5,
-        borderBottomColor: '#d1d1d1',
-        padding: 10,
+  itemBody: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#d1d1d1',
+    padding: 10,
   },
   textItemBody: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginVertical: 10,
   },
-    settingsContent: {
-        marginTop: 10,
-    },
-  itemSettings:{
+  settingsContent: {
+    marginTop: 10,
+  },
+  itemSettings: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding:10,
+    padding: 10,
     borderRadius: 5,
     marginBottom: 10,
   },
-  textItemSettings:{
+  textItemSettings: {
     fontSize: 16,
     fontWeight: 'bold',
     color: 'black',
@@ -178,13 +222,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  btnMailSupport:{
-      marginTop: 10,
-        flexDirection: 'row',
-        padding: 10,
-        paddingVertical:4,
-        borderRadius: 5,
-        alignItems: 'center',
-        backgroundColor: '#fff',
-  }
+  btnMailSupport: {
+    marginTop: 10,
+    flexDirection: 'row',
+    padding: 10,
+    paddingVertical: 4,
+    borderRadius: 5,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
 });

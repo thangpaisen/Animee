@@ -36,6 +36,7 @@ import Reports from "./../screens/Admin/Reports/Reports";
 import PostDetail from "./../screens/Post/PostDetail";
 import ListUserFollow from "./../screens/ProfileUser/ListUserFollow/ListUserFollow";
 import ListUserFollower from "./../screens/ProfileUser/ListUserFollow/ListUserFollower";
+import ReportPostsGroup from "./../screens/Groups/DetailGroup/SettingsGroup/ReportPostsGroup/ReportPostsGroup";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -200,6 +201,13 @@ const StackGroups = () => {
       <Stack.Screen
         name="UpdateDescGroup"
         component={UpdateDescGroup}
+        options={{
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="ReportPostsGroup"
+        component={ReportPostsGroup}
         options={{
           ...TransitionPresets.SlideFromRightIOS,
         }}
