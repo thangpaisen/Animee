@@ -10,8 +10,15 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import ItemUserLovePost from "./ItemUserLovePost";
 import ItemUserCommentPost from "./ItemUserCommentPost";
 import Loading from "./../../components/Loading";
+import {showInterstitialAd} from '../../firebase/Admob';
+import {useNavigation} from '@react-navigation/native';
+import {setCountZero,setCountIncremented} from '../../redux/actions/countLoadAdmob';
+import {useDispatch, useSelector} from 'react-redux';
 const Notification = () => {
     const [data, setData] = useState([])
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const countLoadAdmob = useSelector(state => state.countLoadAdmob);
     const [loading, setLoading] = useState(true)
     useEffect(() => {
         setLoading(true);
@@ -24,6 +31,16 @@ const Notification = () => {
             sub()
         }
     }, [])
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('tabPress', () => {
+            if(countLoadAdmob>=6){
+                showInterstitialAd();
+                dispatch(setCountZero());
+            }
+            else dispatch(setCountIncremented());
+        });
+        return unsubscribe;
+    }, [countLoadAdmob]);
     const handleClickButtonDelete = (id) => {
         firestore().collection('users').doc(auth().currentUser.uid)
         .collection('notifications').doc(id).delete()

@@ -69,7 +69,7 @@ const Home = () => {
   }, [refreshing,user]);
   useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', () => {
-            if(countLoadAdmob>=20){
+            if(countLoadAdmob>=6){
                 showInterstitialAd();
                 dispatch(setCountZero());
             }
@@ -111,7 +111,7 @@ const Home = () => {
             {postsUser.map((item, index) => (
               <View key={item.id}>
               <ItemPost item={item} />
-                  {(false)&&<BannerAd
+                  {(index == 3 || index == postsUser.length-1)&&<BannerAd
                   size={BannerAdSize.SMART_BANNER}
                   // size={BannerAdSize.SMART_BANNER}
                   requestOptions={{

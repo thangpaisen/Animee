@@ -13,8 +13,6 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {getAuth, updatePassword} from 'firebase/auth';
 import ItemRoomChat from './ItemRoomChat';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
 import ItemUserOnline from './ItemUserOnline';
 import Nodata from './../../components/Nodata';
 import Loading from './../../components/Loading';
@@ -31,12 +29,20 @@ import admob, {
 } from '@react-native-firebase/admob';
 import Header from './Header';
 import {showInterstitialAd} from '../../firebase/Admob';
+import {useNavigation} from '@react-navigation/native';
+import {
+  setCountZero,
+  setCountIncremented,
+} from '../../redux/actions/countLoadAdmob';
+import {useDispatch, useSelector} from 'react-redux';
 const Chat = () => {
   const [listUsers, setListUsers] = useState([]);
   const [messagesThreads, setMessagesThreads] = useState([]);
   const [loading, setLoading] = useState(true);
   const me = useSelector(state => state.user.data);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const countLoadAdmob = useSelector(state => state.countLoadAdmob);
   useEffect(() => {
     const sub = firestore()
       .collection('users')
@@ -78,6 +84,15 @@ const Chat = () => {
       sub2();
     };
   }, []);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('tabPress', () => {
+      if (countLoadAdmob >= 6) {
+        showInterstitialAd();
+        dispatch(setCountZero());
+      } else dispatch(setCountIncremented());
+    });
+    return unsubscribe;
+  }, [countLoadAdmob]);
   return (
     <View style={styles.container}>
       <Header />

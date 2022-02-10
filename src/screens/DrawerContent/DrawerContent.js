@@ -70,13 +70,13 @@ const DrawerContent = () => {
                 <Text style={{fontWeight: 'bold'}}>
                   {user?.follow?.length}{' '}
                 </Text>
-                đang Follow
+                Đang theo đõi
               </Text>
               <Text style={{fontSize: 16, marginRight: 10}}>
                 <Text style={{fontWeight: 'bold'}}>
                   {user?.follower?.length}{' '}
                 </Text>
-                Follower
+                Người theo đõi
               </Text>
             </View>
           </View>
@@ -185,7 +185,7 @@ const DrawerContent = () => {
           )}
           label={({focused, color}) => (
             <Text style={{color: '#555', fontSize: 16, fontWeight: 'bold'}}>
-              Help and Feedback
+              Giúp đỡ và phản hồi
             </Text>
           )}
           onPress={() => Linking.openURL('mailto:thangpaisen@gmail.com')}
@@ -196,7 +196,7 @@ const DrawerContent = () => {
           )}
           label={({focused, color}) => (
             <Text style={{color: '#555', fontSize: 16, fontWeight: 'bold'}}>
-              Share
+              Chia sẻ
             </Text>
           )}
           onPress={() =>
@@ -212,7 +212,7 @@ const DrawerContent = () => {
           )}
           label={({focused, color}) => (
             <Text style={{color: '#555', fontSize: 16, fontWeight: 'bold'}}>
-              Sign Out
+              Đăng xuất
             </Text>
           )}
           onPress={() => {

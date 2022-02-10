@@ -19,11 +19,7 @@ const Header = () => {
             onPress={() => navigation.openDrawer()}
           />
         <Text style={styles.textHeader}>Thông báo</Text>
-        <TouchableOpacity
-            onPress={() => navigation.navigate('Search',{type: 'group'})}
-          >
-            <Icon name="search" size={30} color={'black'} />
-          </TouchableOpacity>
+        <Icon name="search" size={30} color={'transparent'} />
       </View>
     )
 }

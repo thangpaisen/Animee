@@ -22,6 +22,7 @@ import Nodata from "./../../components/Nodata";
 import {showInterstitialAd} from '../../firebase/Admob';
 import {setCountZero,setCountIncremented} from '../../redux/actions/countLoadAdmob';
 import {useDispatch, useSelector} from 'react-redux';
+import Suggest from "./../../components/Suggest/Suggest";
 const Groups = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -63,7 +64,7 @@ const Groups = () => {
   }, [refreshing]);
   useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', () => {
-            if(countLoadAdmob>=20){
+            if(countLoadAdmob>=6){
                 showInterstitialAd();
                 dispatch(setCountZero());
             }
@@ -153,11 +154,19 @@ const Groups = () => {
             keyExtractor={(item, index) => item.id}
           />}
         </View>
-        {loading?<Loading />:postsGroups.map(item => (
+        {loading?<Loading />:
+        (postsGroups.length === 0 ? 
+        <Nodata title="Không có bài viết nào" /> : 
+        postsGroups.map(item => (
           <ItemPostGroups key={item.id} item={item} />
-        ))}
+        )))}
       </ScrollView>
-      :<Nodata title="Bạn chưa tham gia nhóm nào" />}
+      :
+        <>
+        <Suggest type={'group'} />
+        <Nodata title="Bạn chưa tham gia nhóm nào" />
+        </>
+      }
     </View>
   );
 };

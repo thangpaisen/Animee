@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   body: {
-    marginBottom: 20,
+    marginBottom: 40,
   },
   textPostUser: {
     flexDirection: 'row',

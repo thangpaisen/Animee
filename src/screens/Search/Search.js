@@ -9,9 +9,10 @@ import Nodata from "./../../components/Nodata";
 import ItemDataMember from "./ItemDataMember";
 import ItemDataGroup from "./ItemDataGroup";
 import ItemUserMessage from "./ItemUserMessage";
+import Suggest from "./../../components/Suggest/Suggest";
 
 const Search = ({route}) => {
-    const type = route?.params?.type|| 'group';
+    const type = route?.params?.type|| '';
   const navigation = useNavigation();
   const [valueSearch, setValueSearch] = useState('');
   const [listDataSearch, setListDataSearch] = useState([]);
@@ -80,7 +81,7 @@ const Search = ({route}) => {
             }      
           )
         )
-      ) : null}
+      ) : <Suggest type={type}/>}
     </View>
   );
 };
