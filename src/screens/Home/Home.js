@@ -113,7 +113,6 @@ const Home = () => {
               <ItemPost item={item} />
                   {(index == 3 || index == postsUser.length-1)&&<BannerAd
                   size={BannerAdSize.SMART_BANNER}
-                  // size={BannerAdSize.SMART_BANNER}
                   requestOptions={{
                     requestNonPersonalizedAdsOnly: true,
                   }}
