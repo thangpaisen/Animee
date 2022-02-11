@@ -16,13 +16,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useSelector} from 'react-redux';
-import ItemReComment from './ItemReComment';
+// import ItemReComment from './ItemReComment';
 import Lightbox from 'react-native-lightbox-v2';
 import {useNavigation} from '@react-navigation/native';
-import { timeSinceComment } from "./../../utils/fomattime";
-const ItemComment = ({item, dataPost,refItem}) => {
+import { timeSinceComment } from "./../../../utils/fomattime";
+const ItemComment = ({item, refItem}) => {
   const navigation = useNavigation();
-  console.log('dataPost', dataPost);
   const userNow = useSelector(state => state.user.data);
   const [userComment, setUserComment] = useState({});
   const [hideReComments, setHideReComments] = useState(true);
@@ -54,32 +53,21 @@ const ItemComment = ({item, dataPost,refItem}) => {
   const handleOnLove = () => {
     const checkLove = item.love.indexOf(auth().currentUser.uid);
     if (checkLove > -1) {
+      var newArr = [...item.love];
+      newArr.splice(checkLove, 1);
       ref.set(
         {
-          love: firestore.FieldValue.arrayRemove(userNow?.uid),
+          love: [...newArr],
         },
         {merge: true},
       );
     } else {
       ref.set(
         {
-          love: firestore.FieldValue.arrayUnion(userNow?.uid),
+          love: [auth().currentUser.uid, ...item.love],
         },
         {merge: true},
       );
-      if(auth().currentUser.uid!==dataPost.uidUser)
-        firestore().collection('users').doc(item.uidUserComment).collection('notifications')
-        .doc(item?.idGroup?`LoveCommentPostGroup${item.id}`:`LoveComment${item.id}`).set({
-            createdAt: new Date().getTime(),
-            listUsers: firestore.FieldValue.arrayUnion(userNow?.uid),
-            type: item?.idGroup?'LoveCommentPostGroup':'LoveComment',
-            idComment: item.id,
-            idPost: item.idPost,
-            idGroup: item.idGroup,
-            watched: false,
-            },
-                {merge: true},
-            );
     }
   };
   const HandleOnLongPressTextComment = () => {
@@ -115,12 +103,7 @@ const ItemComment = ({item, dataPost,refItem}) => {
       <View style={{flex: 1, marginLeft: 10}}>
         <View style={{flexDirection: 'row'}}>
           <View style={styles.title}>
-            <TouchableOpacity style={styles.name}
-              onPress={() => {
-                navigation.navigate('ProfileUser', {uidUser: item.uidUserComment});
-              }}>
-              <Text style={styles.name}>{userComment?.displayName}</Text>
-            </TouchableOpacity>
+            <Text style={styles.name}>{userComment?.displayName}</Text>
             <Pressable
               onLongPress={() => {
                 HandleOnLongPressTextComment();
@@ -185,10 +168,10 @@ const ItemComment = ({item, dataPost,refItem}) => {
                   : '--------- Ẩn câu trả lời'}{' '}
               </Text>
             </TouchableOpacity>
-            {!hideReComments &&
+            {/* {!hideReComments &&
               listReComments.data.map(item => (
                 <ItemReComment item={item} key={item.id} />
-              ))}
+              ))} */}
           </View>
         )}
       </View>

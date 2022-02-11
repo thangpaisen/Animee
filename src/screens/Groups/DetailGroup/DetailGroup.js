@@ -59,6 +59,7 @@ const DetailGroup = ({route}) => {
             return {
               ...item.data(),
               id: item.id,
+              idGroup: id,
             };
           }),
         );

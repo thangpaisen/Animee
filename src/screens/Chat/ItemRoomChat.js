@@ -113,7 +113,7 @@ const ItemRoomChat = ({item}) => {
             onPress={() => handleClickButtonStorage()}>
             <Icon name="file-tray-outline" size={24} color="black" />
             <Text style={{fontSize: 16, marginLeft: 10}}>
-              Lưu trữ̃ tin nhắn
+              Lưu trữ tin nhắn
             </Text>
           </TouchableOpacity>
           <TouchableOpacity

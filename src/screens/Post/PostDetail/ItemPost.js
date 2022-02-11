@@ -21,8 +21,8 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import * as Animatable from 'react-native-animatable';
 import {useSelector} from 'react-redux';
-import Colors from './../../assets/themes/Colors';
-import {timeSince} from './../../utils/fomattime';
+import Colors from './../../../assets/themes/Colors';
+import {timeSince} from './../../../utils/fomattime';
 const ItemPost = ({item,lastInputRef}) => {
   const navigation = useNavigation();
   const userNow = useSelector(state => state.user.data);

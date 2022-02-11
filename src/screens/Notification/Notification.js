@@ -14,6 +14,10 @@ import {showInterstitialAd} from '../../firebase/Admob';
 import {useNavigation} from '@react-navigation/native';
 import {setCountZero,setCountIncremented} from '../../redux/actions/countLoadAdmob';
 import {useDispatch, useSelector} from 'react-redux';
+import ItemUserLoveComment from "./ItemUserLoveComment";
+import ItemUserCommentPostGroup from "./ItemUserCommentPostGroup";
+import ItemUserLovePostGroup from "./ItemUserLovePostGroup";
+import ItemUserLoveCommentPostGroup from "./ItemUserLoveCommentPostGroup";
 const Notification = () => {
     const [data, setData] = useState([])
     const navigation = useNavigation();
@@ -68,8 +72,20 @@ const Notification = () => {
                         else if(item.type === 'Love'){
                             return <ItemUserLovePost key={item.id} item={item} handleClickButtonDelete={handleClickButtonDelete}/>
                         }
+                        else if(item.type === 'LoveComment'){
+                            return <ItemUserLoveComment key={item.id} item={item} handleClickButtonDelete={handleClickButtonDelete}/>
+                        }
+                        else if(item.type === 'LovePostGroup'){
+                            return <ItemUserLovePostGroup key={item.id} item={item} handleClickButtonDelete={handleClickButtonDelete}/>
+                        }
+                        else if(item.type === 'LoveCommentPostGroup'){
+                            return <ItemUserLoveCommentPostGroup key={item.id} item={item} handleClickButtonDelete={handleClickButtonDelete}/>
+                        }
                         else if(item.type === 'Comment'){
                             return <ItemUserCommentPost key={item.id} item={item} handleClickButtonDelete={handleClickButtonDelete}/>
+                        }
+                        else if(item.type === 'CommentGroup'){
+                            return <ItemUserCommentPostGroup key={item.id} item={item} handleClickButtonDelete={handleClickButtonDelete}/>
                         }
                     })}
             </ScrollView>

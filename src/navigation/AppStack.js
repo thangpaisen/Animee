@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {TransitionPresets} from '@react-navigation/stack';
@@ -37,6 +37,7 @@ import PostDetail from "./../screens/Post/PostDetail";
 import ListUserFollow from "./../screens/ProfileUser/ListUserFollow/ListUserFollow";
 import ListUserFollower from "./../screens/ProfileUser/ListUserFollow/ListUserFollower";
 import ReportPostsGroup from "./../screens/Groups/DetailGroup/SettingsGroup/ReportPostsGroup/ReportPostsGroup";
+import PostDetailGroup from "./../screens/Post/PostDetailGroup/PostDetailGroup";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -215,6 +216,7 @@ const StackGroups = () => {
     </Stack.Navigator>
   );
 };
+const {width, height} = Dimensions.get('window');
 const MenuDrawer = () => {
   return (
     <Drawer.Navigator
@@ -222,6 +224,10 @@ const MenuDrawer = () => {
       drawerContent={props =><DrawerContent/>}
       screenOptions={{
         headerShown: false,
+        drawerStyle: {
+          backgroundColor: 'white',
+          width: width * 0.8,
+          },
       }}
       >
       <Drawer.Screen name="MyTabs" component={MyTabs} />
@@ -262,6 +268,13 @@ const AppStack = () => {
       <Stack.Screen
         name="PostDetail"
         component={PostDetail}
+        options={{
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="PostDetailGroup"
+        component={PostDetailGroup}
         options={{
           ...TransitionPresets.SlideFromRightIOS,
         }}

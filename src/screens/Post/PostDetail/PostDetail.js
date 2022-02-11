@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -21,31 +21,49 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import ImagePicker from 'react-native-image-crop-picker';
-import {timeSince} from './../../utils/fomattime';
-import Loading from "./../../components/Loading";
-import Nodata from "./../../components/Nodata";
-const Comments = ({route}) => {
-  const {dataPost, userItemPost, ref} = route.params;
+import {timeSince} from './../../../utils/fomattime';
+import ItemPost from './ItemPost';
+import Loading from "./../../../components/Loading";
+import Nodata from "./../../../components/Nodata";
+const PostDetail = ({route}) => {
+  const {data} = route.params;
   const navigation = useNavigation();
   const [textComment, setTextComment] = useState('');
+  const [dataPost, setDataPost] = useState({});
+  const [loading, setLoading] = useState(true);
   const [imageComment, setImageComment] = useState({
     uri: '',
     fileName: '',
   });
   const [lockUpComment, setLockUpComment] = useState(false);
   const [listComments, setListComments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [reply, setReply] = useState('');
+  const lastInputRef = useRef();
+  const ref = firestore()
+    .collection('postsUser')
+    .doc(data.idPost).collection('comments');
   useEffect(() => {
     setLoading(true);
     const sub = ref.orderBy('createdAt', 'desc').onSnapshot(querySnapshot => {
       setListComments(
-        querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id, idGroup:dataPost?.idGroup||null})),
-        setLoading(false)
+        querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id})),
       );
     });
+    const sub2 = firestore()
+    .collection('postsUser')
+    .doc(data.idPost)
+      .onSnapshot(doc => {
+        if(doc.exists){
+        setDataPost({...doc.data(), id: doc.id});
+        setLoading(false);
+        }
+        else{
+          setDataPost(null);
+          setLoading(false);
+        }
+      });
     return () => {
       sub();
+      sub2();
     };
   }, []);
   const handleSendComment = async () => {
@@ -73,13 +91,12 @@ const Comments = ({route}) => {
             .collection('users')
             .doc(dataPost.uidUser)
             .collection('notifications')
-            .doc(dataPost?.idGroup?`CommentGroup${dataPost.id}`:`Comment${dataPost.id}`)
+            .doc(`Comment${dataPost.id}`)
             .set(
               {
                 createdAt: new Date().getTime(),
-                type: dataPost?.idGroup?'CommentGroup':'Comment',
+                type: 'Comment',
                 idPost: dataPost.id,
-                idGroup: dataPost?.idGroup,
                 listUsers: firestore.FieldValue.arrayUnion(
                   auth().currentUser.uid,
                 ),
@@ -92,7 +109,6 @@ const Comments = ({route}) => {
     handleOnPressRemoveImageComment();
     setLockUpComment(false);
   };
-
   const openLibrary = () => {
     ImagePicker.openPicker({mediaType: 'photo'}).then(image => {
       setImageComment({uri: image.path, fileName: image.modificationDate});
@@ -119,37 +135,20 @@ const Comments = ({route}) => {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="chevron-back-outline" size={30} color="black" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Comments</Text>
+          <Text style={styles.headerTitle}>Bài viết</Text>
         </View>
+        {(!!dataPost) ?
+        (loading ? <Loading/>:
+        <>
         <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
-          {dataPost?.message.text.length > 0 && (
-            <View style={styles.textPostUser}>
-              <Avatar
-                size={34}
-                rounded
-                source={{
-                  uri:
-                    userItemPost?.imageAvatar
-                }}
-              />
-              <View style={styles.title}>
-                <Text style={styles.name}>
-                  {userItemPost?.displayName || 'Người dùng '}
-                </Text>
-                <Text style={styles.lastTime}>
-                  {timeSince(dataPost?.createdAt)}
-                </Text>
-                <Text style={styles.textContent}>{dataPost?.message.text}</Text>
-              </View>
-            </View>
-          )}
-          {loading? <Loading /> :(listComments.length > 0 ? (
+          <ItemPost item={dataPost} lastInputRef={lastInputRef} />
+          {listComments.length > 0 && (
             <>
               {listComments.map((item, index) => (
-                <ItemComment item={item} dataPost={dataPost} key={item.id} refItem={ref} />
+                <ItemComment item={item} key={item.id} refItem={ref} />
               ))}
             </>
-          ):<Nodata title="Không có bình luận nào" />)}
+          )}
         </ScrollView>
         <View style={styles.inputTextComment}>
           {!imageComment?.uri && (
@@ -180,6 +179,7 @@ const Comments = ({route}) => {
               </View>
             ) : null}
             <TextInput
+              ref={lastInputRef}
               style={styles.inputText}
               value={textComment}
               multiline
@@ -195,6 +195,7 @@ const Comments = ({route}) => {
             </TouchableOpacity>
           )}
         </View>
+        </>):<Nodata title={'Bài viết không tồn tại'}/>}
       </View>
       <Modal transparent={true} visible={lockUpComment}>
         <View style={styles.model}>
@@ -205,7 +206,7 @@ const Comments = ({route}) => {
   );
 };
 
-export default Comments;
+export default PostDetail;
 const {width, height} = Dimensions.get('window');
 const styles = StyleSheet.create({
   commentsContainer: {

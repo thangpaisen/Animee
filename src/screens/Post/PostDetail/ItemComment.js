@@ -19,7 +19,7 @@ import {useSelector} from 'react-redux';
 // import ItemReComment from './ItemReComment';
 import Lightbox from 'react-native-lightbox-v2';
 import {useNavigation} from '@react-navigation/native';
-import { timeSinceComment } from "./../../utils/fomattime";
+import { timeSinceComment } from "./../../../utils/fomattime";
 const ItemComment = ({item, refItem}) => {
   const navigation = useNavigation();
   const userNow = useSelector(state => state.user.data);

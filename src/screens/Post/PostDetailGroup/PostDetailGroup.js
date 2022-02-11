@@ -21,15 +21,16 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import ImagePicker from 'react-native-image-crop-picker';
-import {timeSince} from './../../utils/fomattime';
-import ItemPost from './ItemPost';
-import Loading from "./../../components/Loading";
-import Nodata from "./../../components/Nodata";
-const PostDetail = ({route}) => {
+import {timeSince} from './../../../utils/fomattime';
+import ItemPostGroup from './ItemPostGroup';
+import Loading from "./../../../components/Loading";
+import Nodata from "./../../../components/Nodata";
+const PostDetailGroup = ({route}) => {
   const {data} = route.params;
   const navigation = useNavigation();
   const [textComment, setTextComment] = useState('');
   const [dataPost, setDataPost] = useState({});
+  const [dataGroupPost, setDataGroupPost] = useState({});
   const [loading, setLoading] = useState(true);
   const [imageComment, setImageComment] = useState({
     uri: '',
@@ -39,9 +40,9 @@ const PostDetail = ({route}) => {
   const [listComments, setListComments] = useState([]);
   const lastInputRef = useRef();
   const ref = firestore()
-    .collection('postsUser')
-    .doc(data.idPost)
-    .collection('comments');
+    .collection('groups')
+    .doc(data.idGroup)
+    .collection('posts').doc(data.idPost).collection('comments');
   useEffect(() => {
     setLoading(true);
     const sub = ref.orderBy('createdAt', 'desc').onSnapshot(querySnapshot => {
@@ -49,12 +50,13 @@ const PostDetail = ({route}) => {
         querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id})),
       );
     });
-    const sub2 = firestore()
-      .collection('postsUser')
-      .doc(data.idPost)
+    const sub2 =firestore()
+    .collection('groups')
+    .doc(data.idGroup)
+    .collection('posts').doc(data.idPost)
       .onSnapshot(doc => {
         if(doc.exists){
-        setDataPost({...doc.data(), id: doc.id});
+        setDataPost({...doc.data(), id: doc.id, idGroup: data.idGroup});
         setLoading(false);
         }
         else{
@@ -62,9 +64,16 @@ const PostDetail = ({route}) => {
           setLoading(false);
         }
       });
+      const sub3 = firestore()
+      .collection('groups')
+      .doc(data.idGroup)
+      .onSnapshot(doc => {
+        setDataGroupPost(doc.data());
+      });
     return () => {
       sub();
       sub2();
+      sub3();
     };
   }, []);
   const handleSendComment = async () => {
@@ -142,7 +151,7 @@ const PostDetail = ({route}) => {
         (loading ? <Loading/>:
         <>
         <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
-          <ItemPost item={dataPost} lastInputRef={lastInputRef} />
+          <ItemPostGroup item={dataPost} lastInputRef={lastInputRef} />
           {listComments.length > 0 && (
             <>
               {listComments.map((item, index) => (
@@ -196,7 +205,7 @@ const PostDetail = ({route}) => {
             </TouchableOpacity>
           )}
         </View>
-        </>):<Nodata title={'Bài viết không tồn tại'}/>}
+        </>):<Nodata title={'Bài viết không tồn tạicấ'}/>}
       </View>
       <Modal transparent={true} visible={lockUpComment}>
         <View style={styles.model}>
@@ -207,7 +216,7 @@ const PostDetail = ({route}) => {
   );
 };
 
-export default PostDetail;
+export default PostDetailGroup;
 const {width, height} = Dimensions.get('window');
 const styles = StyleSheet.create({
   commentsContainer: {

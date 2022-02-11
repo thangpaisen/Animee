@@ -6,7 +6,7 @@ const ListUserFollower = ({route}) => {
   const userProfile = route.params.userProfile;
   return (
     <View style={styles.container}>
-      <Header title={'Danh sách đang theo dõi'} />
+      <Header title={'Danh sách người theo dõi'} />
       <Text style={styles.text}>{userProfile?.follower?.length} người</Text>
       <FlatList
         data={userProfile?.follower}

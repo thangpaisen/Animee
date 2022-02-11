@@ -66,17 +66,17 @@ const DrawerContent = () => {
             <Text style={styles.name}>{user?.displayName}</Text>
             <Text style={styles.email}>Email: {user?.email}</Text>
             <View style={styles.follower}>
-              <Text style={{fontSize: 16, marginRight: 10}}>
+              <Text style={{fontSize: 14, marginRight: 10}}>
                 <Text style={{fontWeight: 'bold'}}>
                   {user?.follow?.length}{' '}
                 </Text>
-                Đang theo đõi
+                Đang theo dõi
               </Text>
-              <Text style={{fontSize: 16, marginRight: 10}}>
+              <Text style={{fontSize: 14}}>
                 <Text style={{fontWeight: 'bold'}}>
                   {user?.follower?.length}{' '}
                 </Text>
-                Người theo đõi
+                Người theo dõi
               </Text>
             </View>
           </View>
