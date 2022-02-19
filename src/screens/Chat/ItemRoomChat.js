@@ -97,7 +97,7 @@ const ItemRoomChat = ({item}) => {
             style={[styles.lastMessage, !item.watched && styles.textBold]}
             numberOfLines={1}>
             {item.user._id == auth().currentUser.uid && 'Bạn: '}
-            {item.lastMessage.text}
+            {item.lastMessage.text}{item.lastMessage.image && 'đã gửi hình ảnh'}
           </Text>
         </View>
       </TouchableOpacity>

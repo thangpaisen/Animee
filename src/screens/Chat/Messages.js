@@ -1,8 +1,18 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { StyleSheet, Text, View,Pressable } from 'react-native'
-import { GiftedChat } from 'react-native-gifted-chat'
+import { StyleSheet, Text, View,Pressable,Dimensions,Image } from 'react-native'
+import {
+  GiftedChat,
+  Bubble,
+  Send,
+  SystemMessage,
+  Composer,
+  Actions,
+} from 'react-native-gifted-chat';
+import ImagePicker from 'react-native-image-crop-picker';
+import Lightbox from 'react-native-lightbox-v2';
 import Icon from 'react-native-vector-icons/Ionicons'
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from "@react-navigation/native";
 import { Avatar } from "react-native-elements";
@@ -40,6 +50,7 @@ const Messages = ({route}) => {
         sub2()
     }
   }, [])
+
   const onSend = useCallback((messages) => {
       const text = messages[0].text;
         ref.collection('messages').add({
@@ -87,6 +98,129 @@ const Messages = ({route}) => {
         }
       );
   }, [])
+  const handleSendImage = async (uri,height,width) => {
+    console.log("handleSendImage",uri,height,width)
+    ref.collection('messages').add({
+            _id:new Date().getTime(),
+            image: uri,
+            sizeImage:{
+              width, 
+              height
+            },
+            text:'',
+            createdAt: new Date().getTime(),
+            user: {
+            _id: auth().currentUser.uid,
+            },
+        })
+        ref2.collection('messages').add({
+            _id:new Date().getTime(),
+            image: uri,
+            sizeImage:{
+              width, 
+              height
+            },
+            text:'',
+            createdAt: new Date().getTime(),
+            user: {
+            _id: auth().currentUser.uid,
+            },
+        })
+        ref.set({
+            user: {
+            _id: auth().currentUser.uid,
+            },
+          lastMessage: {
+            image: uri,
+            sizeImage:{
+              width, 
+              height
+            },
+            text:'',
+            sizeImage:{},
+            createdAt: new Date().getTime(),
+          },
+        watched: true,
+          hide: false
+        }
+      );
+      ref2.set({
+            user: {
+            _id: auth().currentUser.uid,
+            },
+          lastMessage: {
+            image: uri,
+            sizeImage:{
+              width, 
+              height
+            },
+            text:'',
+            sizeImage:{},
+            createdAt: new Date().getTime(),
+          },
+          watched: false,
+          hide: false
+        }
+      );
+  };
+  const openLibrary = () => {
+    console.log('openLibrary')
+     ImagePicker.openPicker({mediaType: 'photo'}).then(image => {
+       console.log('image',image);
+      upLoadedImageToFirebase(image.path,image.modificationDate,image.width,image.height);
+    }).catch(error => {
+    });
+  };
+  const openCamera = () => {
+    ImagePicker.openCamera({mediaType: 'photo'}).then(image => {
+      upLoadedImageToFirebase(image.path,image.modificationDate,image.width,image.height);
+    }).catch(error => {
+    });
+  };
+  const upLoadedImageToFirebase = async (uri, fileName,height,width) => {
+    console.log("upLoadedImageToFirebase",uri,fileName)
+    const reference = storage().ref(fileName);
+    await reference.putFile(uri);
+    var url = await storage().ref(fileName).getDownloadURL();
+    console.log("url",url)
+    handleSendImage(url,height,width);
+  };
+  const renderActions = props => {
+    return (
+      <Actions
+        {...props}
+        options={{
+          ['Camera']: () => openCamera(),
+          ['Library']: () => openLibrary(),
+        }}
+        // onSend={args => console.log('args')}
+        icon={() => (
+          <View style={{marginTop: -2}}>
+            <Icon name="image-outline" size={24} color="black" />
+          </View>
+        )}
+      />
+    );
+  };
+  const renderMessageImage = props => {
+    let {height, width} = props.currentMessage.sizeImage;
+    return(
+      <View 
+        style={{backgroundColor:'transparent'}}
+        >
+          <Lightbox
+            activeProps={{
+              style: {flex: 1,resizeMode: 'contain'},
+            }}
+            >
+              <Image
+                style={[{resizeMode:'stretch',width:windowWidth/2,height:windowWidth/2 /(width/height),borderRadius:10}]}
+                source={{ uri: props.currentMessage.image }}
+              />
+            </Lightbox>
+        </View>
+    )
+  };
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -105,6 +239,8 @@ const Messages = ({route}) => {
             <GiftedChat
                 scrollToBottom 
                 messages={messages}
+                renderActions={renderActions} //Nút hành động tùy chỉnh ở bên trái của trình soạn tin nhắn
+                renderMessageImage={renderMessageImage}
                 onSend={messages => onSend(messages)}
                 user={{
                     _id:auth().currentUser.uid
@@ -115,7 +251,7 @@ const Messages = ({route}) => {
 }
 
 export default Messages
-
+const windowWidth =  Dimensions.get('window').width;
 const styles = StyleSheet.create({
     container: {
         flex:1,

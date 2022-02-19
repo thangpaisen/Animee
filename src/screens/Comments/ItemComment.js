@@ -22,7 +22,6 @@ import {useNavigation} from '@react-navigation/native';
 import { timeSinceComment } from "./../../utils/fomattime";
 const ItemComment = ({item, dataPost,refItem}) => {
   const navigation = useNavigation();
-  console.log('dataPost', dataPost);
   const userNow = useSelector(state => state.user.data);
   const [userComment, setUserComment] = useState({});
   const [hideReComments, setHideReComments] = useState(true);

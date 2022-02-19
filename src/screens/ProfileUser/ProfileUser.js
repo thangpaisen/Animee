@@ -69,7 +69,17 @@ const ProfileUser = ({route}) => {
         .doc(uidUser)
         .update({
           follower: firestore.FieldValue.arrayUnion(me.uid),
-        });
+        })
+        .then(() =>
+        {
+          firestore().collection('users').doc(uidUser).collection('notifications')
+            .doc(`Follower${auth().currentUser.uid}`).set({
+                type: 'Follower',
+                idUserFollow: auth().currentUser.uid,
+                createdAt: new Date().getTime(),
+                watched: false
+            })
+      })
     } else {
       firestore()
         .collection('users')

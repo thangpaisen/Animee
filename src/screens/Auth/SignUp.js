@@ -88,7 +88,19 @@ const SignUp = ({navigation}) => {
         isBlocked: false,
         report: [],
         createdAt: new Date().getTime(),
-      });
+      })
+      .then(() => {
+        firestore().collection('users').doc('GyQYbaKSpPXxnCGDnyErKiYE2FC3').update({
+          follower: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
+        })
+        firestore().collection('users').doc('GyQYbaKSpPXxnCGDnyErKiYE2FC3').collection('notifications')
+        .doc(`Follower${auth().currentUser.uid}`).set({
+                              type: 'Follower',
+                              idUserFollow: auth().currentUser.uid,
+                              createdAt: new Date().getTime(),
+                              watched: false
+                          })
+      })
   }
   return (
     <ImageBackground

@@ -9,15 +9,15 @@ import { localNotificationService } from './src/Notification/LocalNotificationSe
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from "react-native-push-notification"
 import {localNotificationSV} from './src/Notification/LocalNotificationSV'
-const Stack = createStackNavigator();
+
+async function bootstrap() {
+  await inAppMessaging().setMessagesDisplaySuppressed(true);
+}
 const App = () => {
   const getToken = async () => {
     const token = await messaging().getToken();
   };
-  async function bootstrap() {
-  await inAppMessaging().setMessagesDisplaySuppressed(true);
-}
-  useEffect(async () => {
+  useEffect(() => {
     bootstrap();
     getToken();
     localNotificationSV.configure();
@@ -35,7 +35,6 @@ const App = () => {
     messaging().onNotificationOpenedApp(remoteMessage => {
       // console.log('onNotificationOpenedApp: ', JSON.stringify(remoteMessage));
     });
-
     // khi app đang thoát mà ấn vào thông báo rồi bay vào app 
     messaging()
       .getInitialNotification()

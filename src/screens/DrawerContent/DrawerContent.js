@@ -201,7 +201,7 @@ const DrawerContent = () => {
           )}
           onPress={() =>
             Share.share({
-              message: 'DownLoad and experience App on ....',
+              message: 'DownLoad and experience App Animee on https://play.google.com/store/apps/details?id=com.animee',
             })
           }
         />

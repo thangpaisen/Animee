@@ -92,6 +92,7 @@ const UploadPost = ({route}) => {
             style={{
               fontSize: 16,
               fontWeight: 'bold',
+              color: 'black',
               flex: 1,
               paddingHorizontal: 10,
             }}
@@ -193,6 +194,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 18,
+    color: 'black',
     lineHeight: 23,
     paddingTop: 4,
     marginHorizontal: 10,

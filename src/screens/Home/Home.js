@@ -111,12 +111,12 @@ const Home = () => {
             {postsUser.map((item, index) => (
               <View key={item.id}>
               <ItemPost item={item} />
-                  {(index == 3 || index == postsUser.length-1)&&<BannerAd
+                  {(index==4)&&<BannerAd
                   size={BannerAdSize.SMART_BANNER}
                   requestOptions={{
                     requestNonPersonalizedAdsOnly: true,
                   }}
-                  unitId={'ca-app-pub-5057240456793980/6870738526'}
+                  unitId={TestIds.BANNER}
                   onAdLoaded={() => {
                     console.log('Advert loaded1');
                   }}

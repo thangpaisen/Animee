@@ -123,6 +123,7 @@ const Chat = () => {
       ) : (
         <Nodata title="Không có tin nhắn nào, bạn có thể tìm kiếm người để bắt đầu cuộc trò chuyện của mình" />
       )}
+      {/* banner ads */}
       <View style={{alignSelf: 'center', marginBottom: 5}}>
         <BannerAd
           size={BannerAdSize.BANNER}
@@ -130,7 +131,7 @@ const Chat = () => {
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
           }}
-          unitId={'ca-app-pub-5057240456793980/6870738526'}
+          unitId={TestIds.BANNER}
           onAdLoaded={() => {
             console.log('Advert loaded3');
           }}

@@ -10,9 +10,9 @@
   AdMobRewarded,
 } from '@react-native-firebase/admob';
 export const showInterstitialAd = () => {
-    // Create a new instance
+    //Create a new instance
     console.log('showInterstitialAd');
-    const interstitialAd = InterstitialAd.createForAdRequest('ca-app-pub-5057240456793980/6539388422');
+    const interstitialAd = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
     // Add event handlers
     interstitialAd.onAdEvent((type, error) => {

@@ -5,7 +5,6 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 const ItemReportPostGroup = ({item,refGroup}) => {
   const [usersReport, setUsersReport] = useState([]);
-  console.log('item',item);
   const ref = refGroup.collection('posts').doc(item.id);
   useEffect(() => {
     item?.report.forEach(item => {

@@ -205,7 +205,7 @@ const PostDetailGroup = ({route}) => {
             </TouchableOpacity>
           )}
         </View>
-        </>):<Nodata title={'Bài viết không tồn tạicấ'}/>}
+        </>):<Nodata title={'Bài viết không tồn tại'}/>}
       </View>
       <Modal transparent={true} visible={lockUpComment}>
         <View style={styles.model}>

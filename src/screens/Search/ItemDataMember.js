@@ -73,7 +73,6 @@ const ItemDataMember = ({data}) => {
                 onPress={() => {
                     handleOnFollow();
                 }}
-                    // disabled={isFollow}
                 >
                 <Text style={{color: '#fff'}}>{!isFollow?'Theo đõi':'Dang theo đõi'}</Text>
               </Pressable>}

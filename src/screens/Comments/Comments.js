@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
     fontSize: 16,
+    color: 'black',
   },
   send: {
     alignSelf: 'flex-end',
