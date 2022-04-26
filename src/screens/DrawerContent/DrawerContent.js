@@ -10,7 +10,7 @@ import {
   AppState,
   Alert,
 } from 'react-native';
-import admob, { MaxAdContentRating } from '@react-native-firebase/admob';
+import admob, {MaxAdContentRating} from '@react-native-firebase/admob';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
@@ -38,8 +38,7 @@ const DrawerContent = () => {
         tagForChildDirectedTreatment: true,
         tagForUnderAgeOfConsent: true,
       })
-      .then(() => {
-      });
+      .then(() => {});
   }, []);
   const handleOnLogout = async () => {
     auth()
@@ -201,8 +200,22 @@ const DrawerContent = () => {
           )}
           onPress={() =>
             Share.share({
-              message: 'DownLoad and experience App Animee on https://play.google.com/store/apps/details?id=com.animee',
+              message:
+                'DownLoad and experience App Animee on https://play.google.com/store/apps/details?id=com.animee',
             })
+          }
+        />
+        <DrawerItem
+          icon={({color, size}) => (
+            <Icon name="reader-outline" color={color} size={size} />
+          )}
+          label={({focused, color}) => (
+            <Text style={{color: '#555', fontSize: 16, fontWeight: 'bold'}}>
+              Điều khoản sử dụng
+            </Text>
+          )}
+          onPress={() =>
+            Linking.openURL('https://pages.flycricket.io/animee/terms.html')
           }
         />
         <DrawerItem

@@ -10,7 +10,7 @@ import {
   StatusBar,
   Pressable,
   ToastAndroid,
-  ActivityIndicator,
+  Linking,
 } from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import {Input} from 'react-native-elements';
@@ -18,7 +18,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import imgBr from '../../assets/images/bgr.jpg';
 import auth from '@react-native-firebase/auth';
 import {useDispatch, useSelector} from 'react-redux';
-import {getUser} from '../../redux/actions/user';
+import {CheckBox} from 'react-native-elements';
+
 const validateEmail = email => {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -34,14 +35,20 @@ const SignIn = ({navigation}) => {
   const [errorMessagePassword, setErrorMessagePassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [checkService, setCheckService] = useState(false);
 
   function handleOnPressLogin() {
-    if (!validateEmail(email.trim()))
-      setErrorMessageEmail('Email must be a valid email');
-    if (password.trim()?.length < 6)
-      setErrorMessagePassword('Password must be at least 6 characters');
-    if (validateEmail(email.trim()) && password.trim()?.length >= 6)
-      loginUser(email.trim(), password.trim());
+    if (!email.trim()) {
+      Alert.alert('Thông báo', 'Bạn chưa nhập Email');
+    } else if (!validateEmail(email?.trim()))
+      Alert.alert('Thông báo', 'Email không hợp lệ');
+    else if (password?.trim()?.length < 6)
+      Alert.alert('Thông báo', 'Mật khẩu phải có ít nhất 6 ký tự');
+    else if (!checkService) {
+      Alert.alert('Thông báo', 'Bạn chưa đồng ý với các điều khoản sử dụng');
+    } else {
+      loginUser(email?.trim(), password?.trim());
+    }
   }
   function loginUser(email, password) {
     setLoading(true);
@@ -88,7 +95,7 @@ const SignIn = ({navigation}) => {
       <View style={{flex: 3}}></View>
       <View style={styles.main}>
         <View style={styles.title}>
-          <Text style={styles.footerTitle}>Welcome AnimeShop</Text>
+          <Text style={styles.footerTitle}>Welcome Animee</Text>
           <Text style={styles.footerTitle2}>Đăng nhập tài khoản</Text>
         </View>
         <View style={styles.action}>
@@ -133,12 +140,50 @@ const SignIn = ({navigation}) => {
             }}
           />
         </View>
+
         <TouchableOpacity
           style={styles.button}
           disabled={loading ? true : false}
           onPress={handleOnPressLogin}>
           <Text style={styles.textButton}>Đăng nhập</Text>
         </TouchableOpacity>
+        <View style={styles.secureTextEntry}>
+          <CheckBox
+            title=""
+            onPress={() => setCheckService(!checkService)}
+            checked={checkService}
+            containerStyle={styles.checkboxContainer}
+          />
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}>
+            <Text
+              style={{
+                color: 'black',
+                fontSize: 16,
+                marginRight: 4,
+              }}>
+              Đồng ý
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL(
+                  'https://pages.flycricket.io/animee/terms.html',
+                );
+              }}>
+              <Text
+                style={{
+                  color: 'blue',
+                  fontSize: 16,
+                }}>
+                {' '}
+                Điều khoản sử dụng
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         <View style={styles.signup}>
           <Text style={{fontSize: 14}}>Bạn chưa có tài khoản?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
@@ -211,5 +256,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  checkboxContainer: {
+    backgroundColor: 'white',
+    borderWidth: 0,
+    padding: 0,
+  },
+  secureTextEntry: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
   },
 });

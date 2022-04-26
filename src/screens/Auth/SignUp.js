@@ -8,12 +8,16 @@ import {
   StatusBar,
   Pressable,
   ToastAndroid,
+  Linking,
+  Alert,
 } from 'react-native';
 import {Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import imgBr from '../../assets/images/bgr.jpg';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {CheckBox} from 'react-native-elements';
+
 const validateEmail = email => {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -29,19 +33,20 @@ const SignUp = ({navigation}) => {
   const [errorMessageName, setErrorMessageName] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [checkService, setCheckService] = useState(false);
 
   function handleOnPressLogin() {
-    if (name.trim().length < 6) setErrorMessageName('Name is a required field');
-    if (!validateEmail(email.trim()))
-      setErrorMessageEmail('Email must be a valid email');
-    if (password.trim()?.length < 6)
-      setErrorMessagePassword('Password must be at least 6 characters');
-    if (
-      validateEmail(email.trim()) &&
-      password.trim()?.length >= 6 &&
-      name.trim()?.length >= 6
-    )
+    if (name.trim().length < 6) {
+      Alert.alert('Thông báo', 'Tên phải có ít nhất 6 ký tự');
+    } else if (!validateEmail(email.trim())) {
+      Alert.alert('Thông báo', 'Email không hợp lệ');
+    } else if (password.trim()?.length < 6) {
+      Alert.alert('Thông báo', 'Mật khẩu phải có ít nhất 6 ký tự');
+    } else if (!checkService) {
+      Alert.alert('Thông báo', 'Bạn chưa đồng ý với các điều khoản');
+    } else {
       registerUser(name.trim(), email.trim(), password.trim());
+    }
   }
 
   function registerUser(name, email, password) {
@@ -90,17 +95,24 @@ const SignUp = ({navigation}) => {
         createdAt: new Date().getTime(),
       })
       .then(() => {
-        firestore().collection('users').doc('GyQYbaKSpPXxnCGDnyErKiYE2FC3').update({
-          follower: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
-        })
-        firestore().collection('users').doc('GyQYbaKSpPXxnCGDnyErKiYE2FC3').collection('notifications')
-        .doc(`Follower${auth().currentUser.uid}`).set({
-                              type: 'Follower',
-                              idUserFollow: auth().currentUser.uid,
-                              createdAt: new Date().getTime(),
-                              watched: false
-                          })
-      })
+        firestore()
+          .collection('users')
+          .doc('GyQYbaKSpPXxnCGDnyErKiYE2FC3')
+          .update({
+            follower: firestore.FieldValue.arrayUnion(auth().currentUser.uid),
+          });
+        firestore()
+          .collection('users')
+          .doc('GyQYbaKSpPXxnCGDnyErKiYE2FC3')
+          .collection('notifications')
+          .doc(`Follower${auth().currentUser.uid}`)
+          .set({
+            type: 'Follower',
+            idUserFollow: auth().currentUser.uid,
+            createdAt: new Date().getTime(),
+            watched: false,
+          });
+      });
   }
   return (
     <ImageBackground
@@ -181,6 +193,43 @@ const SignUp = ({navigation}) => {
           onPress={handleOnPressLogin}>
           <Text style={styles.textButton}>Đăng ký</Text>
         </TouchableOpacity>
+        <View style={styles.secureTextEntry}>
+          <CheckBox
+            title=""
+            onPress={() => setCheckService(!checkService)}
+            checked={checkService}
+            containerStyle={styles.checkboxContainer}
+          />
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}>
+            <Text
+              style={{
+                color: 'black',
+                fontSize: 16,
+                marginRight: 4,
+              }}>
+              Đồng ý
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL(
+                  'https://pages.flycricket.io/animee/terms.html',
+                );
+              }}>
+              <Text
+                style={{
+                  color: 'blue',
+                  fontSize: 16,
+                }}>
+                {' '}
+                Điều khoản sử dụng
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         <View style={styles.signup}>
           <Text style={{fontSize: 14}}>Bạn đã có tài khoản?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
@@ -247,5 +296,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  checkboxContainer: {
+    backgroundColor: 'white',
+    borderWidth: 0,
+    padding: 0,
+  },
+  secureTextEntry: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
   },
 });
